@@ -81,7 +81,23 @@ function sendData( data ) {
       description += "<br>Referência: " + response.reference;
     }
 
-    description += "<br>Código QrCode: <button class='underline text-sm js-qrcode-show-and-copy' data-clipboard-target='#copy-qrcode-code-show-full'>mostrar e copiar</button><span id='copy-qrcode-code-show-full' class='js-show-qrcode-code hidden break-words mt-5 text-sm font-semibold block'>" + response.code + "</span>";
+    description += `<br>Código QrCode:
+      <button class='underline text-sm js-qrcode-show-and-copy' data-clipboard-target='#copy-qrcode-code-show-full'>mostrar e copiar</button>
+      <span id='copy-qrcode-code-show-full' class='js-show-qrcode-code hidden break-words mt-5 text-sm font-semibold block'>${response.code}</span>`;
+
+    description += `<br>Link com QrCode:
+      <button class='underline text-sm js-qrcode-link-show-and-copy' data-clipboard-target='#copy-qrcode-link'>mostrar e copiar</button>
+      <a id='copy-qrcode-link' class='js-show-qrcode-link hidden break-words mt-5 text-sm font-semibold block' href="${response.deeplink}">${response.deeplink}</a>`;
+
+    description += `
+        <br>
+        <div class=" md:invisible lg:invisible xl:invisible visible mt-5 mb-10 md:m-0 lg:m-0 xl:m-0">
+          <a class="no-underline bg-green-500 hover:bg-green-600 text-white font py-1 px-2 rounded inline-block w-2/3 " href="whatsapp://send?text=${encodeURIComponent(response.deeplink)}">
+            <i class="whatsapp-icon align-middle h-5 mr-2 md:invisible lg:invisible xl:invisible visible"></i>
+            <span>Whatsapp</span>
+          </a>
+        </div>
+    `
 
     qrcodeDescription.innerHTML = description;
 
@@ -95,11 +111,27 @@ function sendData( data ) {
       e.clearSelection();
     });
 
-
     showCodeBtn.addEventListener('click', function() {
       var showCode = document.querySelector('.js-show-qrcode-code');
       showCode.classList.remove("hidden");
     });
+
+
+    var showLinkBtn = document.querySelector('.js-qrcode-link-show-and-copy');
+
+    var clipboard = new ClipboardJS('.js-qrcode-link-show-and-copy');
+
+    clipboard.on('success', function(e) {
+      e.clearSelection();
+    });
+
+
+    showLinkBtn.addEventListener('click', function() {
+      var showCode = document.querySelector('.js-show-qrcode-link');
+      showCode.classList.remove("hidden");
+    });
+
+
 
     const qrcodeContainer = document.querySelector('.js-qr-code-container');
 
@@ -120,6 +152,21 @@ var serializeForm = function (form) {
 
 document.addEventListener('DOMContentLoaded', function() {
 
+  var showCodeBtn = document.querySelector('.js-qrcode-show-and-copy');
+
+  var clipboard = new ClipboardJS('.js-qrcode-show-and-copy');
+
+  if (showCodeBtn) {
+    clipboard.on('success', function(e) {
+      e.clearSelection();
+    });
+
+
+    showCodeBtn.addEventListener('click', function() {
+      var showCode = document.querySelector('.js-show-qrcode-code');
+      showCode.classList.remove("hidden");
+    });
+  }
 
 
   const btn = document.querySelector('.js-trigger-qr-code');

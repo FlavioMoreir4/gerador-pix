@@ -7,6 +7,8 @@ var express = require('express')
   , fs = require('fs')
   , path = require('path')
   , QRCode = require('qrcode')
+  , CryptoJS = require("crypto-js")
+  , base64url = require('base64url');
 
 const app = express();
 
@@ -41,6 +43,16 @@ app.get('/', function(req, res) {
   res.render('index', {article_links: article_links});
 });
 
+app.get('/pix/:id', function(req, res) {
+  console.log(req.params.id)
+  code = base64url.decode(req.params.id);
+
+    QRCode.toDataURL(code, {width: QR_CODE_SIZE, height: QR_CODE_SIZE})
+    .then(qrcode => {   res.render('show', {code: code, remove_from_crawler: true, qrcode: qrcode})  });
+
+
+});
+
 app.post('/emvqr-static', (req, res) => {
   var { key, amount, name, reference, key_type, city } = req.body
 
@@ -51,8 +63,7 @@ app.post('/emvqr-static', (req, res) => {
 
       QRCode.toDataURL(code, {width: QR_CODE_SIZE, height: QR_CODE_SIZE})
       .then(qrcode => {
-        res.json({
-          qrcode_base64: qrcode,
+        body = {
           code: code,
           key_type: brCode.key_type,
           key: brCode.key,
@@ -60,7 +71,13 @@ app.post('/emvqr-static', (req, res) => {
           name: brCode.name,
           city: brCode.city,
           reference: brCode.reference,
-          formated_amount: brCode.formated_amount()})
+          formated_amount: brCode.formated_amount()
+        }
+
+        body['deeplink'] = (process.env.HOST || 'http://localhost:5000/pix/') + base64url(code);
+        body['qrcode_base64'] = qrcode;
+
+        res.json(body)
       })
       .catch(err => {
         console.error(err)

@@ -1,0 +1,23 @@
+<div class="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8">
+  <div class="mt-5 md:mt-0 md:col-span-2">
+    <div class="mt-6 js-qr-code-container">
+      <h2 class="text-xl leading-9 font-bold mt-10">
+        QR Code
+      </h2>
+
+      <div class=" mt-2 border-2 border-gray-300 border-dashed rounded-md">
+        <div class="object-center mx-auto js-qrcode-replace text-center mb-8">
+          <img src="{{qrcode}}" alt="QR CODE PIX Link" class="mx-auto">
+          <a download="qrcode-pix" class="px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" href="{{qrcode}}" >Baixar QrCode</a></span>
+
+        </div>
+
+        <div class="text-center block mb-10">
+          <p class="js-qr-code-description">
+            <br>Código QrCode: <button class='underline text-sm js-qrcode-show-and-copy' data-clipboard-target='#copy-qrcode-code-show-full'>mostrar e copiar</button><span id='copy-qrcode-code-show-full' class='js-show-qrcode-code hidden break-words mt-5 text-sm font-semibold block'>{{code}}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

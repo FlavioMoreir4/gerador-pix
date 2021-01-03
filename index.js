@@ -46,7 +46,24 @@ app.get('/', function(req, res) {
 app.get('/pix/:id', function(req, res) {
   console.log(req.params.id)
   code = base64url.decode(req.params.id);
+  bytes = CryptoJS.AES.decrypt(code, 'secret key 123');
+  code = bytes.toString(CryptoJS.enc.Utf8);
 
+  console.log(code);
+    QRCode.toDataURL(code, {width: QR_CODE_SIZE, height: QR_CODE_SIZE})
+    .then(qrcode => {   res.render('show', {code: code, remove_from_crawler: true, qrcode: qrcode})  });
+
+
+});
+
+
+app.get('/pix-qrcode-img/:id', function(req, res) {
+  console.log(req.params.id)
+  code = base64url.decode(req.params.id);
+  bytes = CryptoJS.AES.decrypt(code, 'secret key 123');
+  code = bytes.toString(CryptoJS.enc.Utf8);
+
+  console.log(code);
     QRCode.toDataURL(code, {width: QR_CODE_SIZE, height: QR_CODE_SIZE})
     .then(qrcode => {   res.render('show', {code: code, remove_from_crawler: true, qrcode: qrcode})  });
 
@@ -74,7 +91,7 @@ app.post('/emvqr-static', (req, res) => {
           formated_amount: brCode.formated_amount()
         }
 
-        body['deeplink'] = (process.env.HOST || 'http://localhost:5000/pix/') + base64url(code);
+        body['deeplink'] = (process.env.HOST || 'http://localhost:5000/pix/') + base64url(CryptoJS.AES.encrypt(code, 'secret key 123').toString());
         body['qrcode_base64'] = qrcode;
 
         res.json(body)
